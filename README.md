@@ -39,5 +39,8 @@ pip install -r requirements.txt
 ```
 
 ```bash
+
+## Live Demo
+https://min-max-finder-using-divide-and-conquer-algorithm-7ucdfcu2rdic.streamlit.app/
 streamlit run app.py
 ```
