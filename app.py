@@ -1,66 +1,46 @@
 import streamlit as st
-import random
-comparison_count = 0
-def min_max_dc(arr, low, high):
-    global comparison_count
-    if low == high:
-        return arr[low], arr[low]
-    if high == low + 1:
-        comparison_count += 1
-        if arr[low] < arr[high]:
-            return arr[low], arr[high]
-        return arr[high], arr[low]
-    mid = (low + high) // 2
-    lmin, lmax = min_max_dc(arr, low, mid)
-    rmin, rmax = min_max_dc(arr, mid + 1, high)
-    comparison_count += 1
-    overall_min = lmin if lmin < rmin else rmin
-    comparison_count += 1
-    overall_max = lmax if lmax > rmax else rmax
-    return overallmin, overall_max
-def min_max_naive(arr):
-    mn, mx = arr[0], arr[0]
-    comps = 0
-    for x in arr[1:]:
-        comps += 1
-        if x < mn:
-            mn = x
-        comps += 1
-        if x > mx:
-            mx = x
-    return mn, mx, comps
-st.title("Min-Max Finder using Divide and Conquer")
-st.write("Compare Divide & Conquer with Naive Approach.")
+import PROGRAM
+st.set_page_config(
+    page_title="Min-Max Finder",
+    page_icon="📊",
+    layout="centered"
+)
+st.title("📊 Min-Max Finder Using Divide and Conquer")
+st.write("Compare the Divide and Conquer algorithm with the Naive approach.")
 numbers = st.text_input(
     "Enter numbers separated by commas",
     "3,1,7,4,9,2,8,5,6,0"
 )
 if st.button("Find Min & Max"):
-    arr = list(map(int, numbers.split(",")))
-    comparison_count = 0
-    mn, mx = min_max_dc(arr, 0, len(arr)-1)
-    dc = comparison_count
-    _, _, naive = min_max_naive(arr)
-    st.success(f"Minimum Value : {mn}")
-    st.success(f"Maximum Value : {mx}")
-    st.subheader("Comparison Count")
-    st.write(f"Divide & Conquer : **{dc}**")
-    st.write(f"Naive Method : **{naive}**")
-st.subheader("Performance Analysis")
-sizes = [10,100,1000,10000]
-table = []
-for size in sizes:
-    arr = [random.randint(1,10000) for _ in range(size)]
-    comparison_count = 0
-    min_max_dc(arr,0,len(arr)-1)
-    dc = comparison_count
-    _,_,naive = min_max_naive(arr)
-    formula = 3*size//2 -2
-    table.append({
-        "Input Size":size,
-        "D&C Comparisons":dc,
-        "Naive Comparisons":naive,
-        "Formula (3n/2-2)":formula
-    })
+    try:
+        arr = [int(x.strip()) for x in numbers.split(",")]
+        PROGRAM.comparison_count = 0
+        mn, mx = PROGRAM.min_max_dc(arr, 0, len(arr) - 1)
+        dc_comps = PROGRAM.comparison_count
+        _, _, naive_comps = PROGRAM.min_max_naive(arr)
+        st.success(f"✅ Minimum Value: **{mn}**")
+        st.success(f"✅ Maximum Value: **{mx}**")
+        st.subheader("Comparison Analysis")
+        col1, col2 = st.columns(2)
+        with col1:
+            st.metric("Divide & Conquer", dc_comps)
+        with col2:
+            st.metric("Naive Method", naive_comps)
+    except ValueError:
+        st.error("Please enter only integers separated by commas.")
+st.markdown("---")
+st.subheader("Algorithm")
+st.markdown("""
+### Divide and Conquer Steps
+1. Divide the array into two halves.
+2. Recursively find the minimum and maximum of each half.
+3. Compare the two minimum values.
+4. Compare the two maximum values.
+5. Return the overall minimum and maximum.
 
-st.table(table)
+### Time Complexity
+- **Divide & Conquer:** O(n)
+- **Naive Method:** O(n)
+
+The Divide and Conquer approach performs fewer comparisons (approximately **3n/2 − 2**) than the Naive method (**2(n−1)**).
+""")
